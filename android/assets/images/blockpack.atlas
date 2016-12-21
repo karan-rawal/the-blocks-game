@@ -1,0 +1,15 @@
+
+blockpack.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+button
+  rotate: false
+  xy: 2, 2
+  size: 40, 40
+  split: 20, 19, 19, 19
+  pad: 7, 8, 7, 7
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
