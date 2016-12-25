@@ -34,6 +34,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log(LOG_TAG, "Show Called");
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -52,6 +53,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(LOG_TAG, "Resize Called");
+        stage.getViewport().update(width, height, false);
     }
 
     @Override

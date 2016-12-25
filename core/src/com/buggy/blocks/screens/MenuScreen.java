@@ -3,21 +3,8 @@ package com.buggy.blocks.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.buggy.blocks.BuggyGame;
-import com.buggy.blocks.actors.RectActor;
 import com.buggy.blocks.stages.MenuStage;
-import com.buggy.blocks.utils.GameConfig;
-
-import org.w3c.dom.css.Rect;
 
 /**
  * The menu screen.

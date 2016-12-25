@@ -3,8 +3,11 @@ package com.buggy.blocks.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Timer;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.stages.SplashStage;
+import com.buggy.blocks.utils.GameConfig;
+import com.buggy.blocks.utils.GameManager;
 
 /**
  * The splash screen.
@@ -35,6 +38,15 @@ public class SplashScreen implements Screen {
     public void show() {
         Gdx.app.log(LOG_TAG, "Show called");
         Gdx.input.setInputProcessor(stage);
+
+        //Schedule a timer to load the gamescreen.
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Gdx.app.log(LOG_TAG, "Time passed, now we can create game screen");
+                GameManager.changeScreen(GameManager.MENU_SCREEN);
+            }
+        }, GameConfig.SPLASH_SCREEN_DURATION);
     }
 
     @Override
