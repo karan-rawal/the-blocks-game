@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Disposable;
 import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.RectInputListener;
 
@@ -14,7 +15,7 @@ import com.buggy.blocks.utils.RectInputListener;
  * Represents a square/rectangle in the board.
  * Created by karan on 21/12/16.
  */
-public class BoardRectActor extends Actor {
+public class BoardRectActor extends Actor implements Disposable {
 
     private int positionInMatrix[];
     private RectInputListener listener;
@@ -36,6 +37,8 @@ public class BoardRectActor extends Actor {
         setBounds(x - (width / 2), y - (height / 2), width, height);
         setOrigin(width / 2, height / 2);
         setColor(rectColor);
+        this.rectColor = rectColor;
+        this.listener = listener;
         texture = GameManager.getTextureForTheColor(rectColor);
         addListener(new ActorGestureListener() {
             @Override
@@ -78,4 +81,16 @@ public class BoardRectActor extends Actor {
         return rectColor;
     }
 
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    @Override
+    public void dispose() {
+        texture.dispose();
+    }
 }
