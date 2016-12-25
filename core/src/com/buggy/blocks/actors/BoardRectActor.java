@@ -18,6 +18,7 @@ public class BoardRectActor extends Actor {
     private ShapeRenderer renderer;
     private int positionInMatrix[];
     private RectInputListener listener;
+    private Color rectColor;
 
     /**
      * Instantiates a new Board rect actor.
@@ -28,11 +29,11 @@ public class BoardRectActor extends Actor {
      * @param height the height
      * @param point  denotes the position of the rect on the board.
      */
-    public BoardRectActor(float x, float y, float width, float height, int point[], final RectInputListener listener) {
+    public BoardRectActor(float x, float y, float width, float height, int point[], final RectInputListener listener, Color rectColor) {
         positionInMatrix = point;
         renderer = new ShapeRenderer();
         setBounds(x - (width / 2), y - (height / 2), width, height);
-        setColor(Color.BLACK);
+        setColor(rectColor);
         addListener(new ActorGestureListener() {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
@@ -63,7 +64,7 @@ public class BoardRectActor extends Actor {
         color.a = getColor().a * parentAlpha;
         renderer.setColor(color);
         renderer.setProjectionMatrix(batch.getProjectionMatrix());
-        renderer.begin(ShapeRenderer.ShapeType.Line);
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.rect(getX(), getY(), getWidth(), getHeight());
         renderer.end();
     }
@@ -73,4 +74,9 @@ public class BoardRectActor extends Actor {
         String name = String.format("Button at [%d, %d]", positionInMatrix[0], positionInMatrix[1]);
         return name;
     }
+
+    public Color getRectColor() {
+        return rectColor;
+    }
+
 }

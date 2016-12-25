@@ -1,6 +1,7 @@
 package com.buggy.blocks.stages;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,6 +13,7 @@ import com.buggy.blocks.utils.RectInputListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Stage for the game screen.
@@ -41,6 +43,9 @@ public class GameStage extends Stage implements RectInputListener{
      */
     private Rectangle boardBounds;
 
+    private Random random = new Random();
+    private Color[] colors;
+
     /**
      * Instantiates a new Game stage.
      */
@@ -52,7 +57,12 @@ public class GameStage extends Stage implements RectInputListener{
         FitViewport viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
         setViewport(viewport);
 
+        setupColors();
         setupBoard();
+    }
+
+    private void setupColors() {
+        colors = new Color[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW};
     }
 
     private void setupBoard() {
@@ -81,7 +91,8 @@ public class GameStage extends Stage implements RectInputListener{
             float positionX;
             for(int j = 0;j < BOARD_COLUMNS;j++){
                 positionX = initialX + (j * squareWidthWithPadding);
-                BoardRectActor rect = new BoardRectActor(positionX, positionY, SQUARE_WIDTH, SQUARE_HEIGHT, new int[]{i, j}, this);
+                int randomNum = random.nextInt(colors.length) + 0;
+                BoardRectActor rect = new BoardRectActor(positionX, positionY, SQUARE_WIDTH, SQUARE_HEIGHT, new int[]{i, j}, this, colors[randomNum]);
                 addActor(rect);
             }
         }
