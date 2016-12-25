@@ -1,11 +1,12 @@
 package com.buggy.blocks.actors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.RectInputListener;
 
 
@@ -15,11 +16,11 @@ import com.buggy.blocks.utils.RectInputListener;
  */
 public class BoardRectActor extends Actor {
 
-    private ShapeRenderer renderer;
     private int positionInMatrix[];
     private RectInputListener listener;
     private Color rectColor;
 
+    private Texture texture;
     /**
      * Instantiates a new Board rect actor.
      *
@@ -31,9 +32,11 @@ public class BoardRectActor extends Actor {
      */
     public BoardRectActor(float x, float y, float width, float height, int point[], final RectInputListener listener, Color rectColor) {
         positionInMatrix = point;
-        renderer = new ShapeRenderer();
+        setDebug(true);
         setBounds(x - (width / 2), y - (height / 2), width, height);
+        setOrigin(width / 2, height / 2);
         setColor(rectColor);
+        texture = GameManager.getTextureForTheColor(rectColor);
         addListener(new ActorGestureListener() {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
@@ -60,13 +63,9 @@ public class BoardRectActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        Color color = getColor();
-        color.a = getColor().a * parentAlpha;
-        renderer.setColor(color);
-        renderer.setProjectionMatrix(batch.getProjectionMatrix());
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.rect(getX(), getY(), getWidth(), getHeight());
-        renderer.end();
+        batch.draw(texture, this.getX(), getY(), this.getOriginX(), this.getOriginY(), this.getWidth(),
+                this.getHeight(), this.getScaleX(), this.getScaleY(), this.getRotation(), 0, 0,
+                texture.getWidth(), texture.getHeight(), false, false);
     }
 
     @Override

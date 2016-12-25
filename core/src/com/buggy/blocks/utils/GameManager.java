@@ -2,6 +2,9 @@ package com.buggy.blocks.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.screens.GameScreen;
@@ -86,5 +89,14 @@ public class GameManager {
         return textureAtlas;
     }
 
+    public static Texture getTextureForTheColor(Color color)
+    {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA4444); // or RGBA8888
+        pixmap.setColor(color);
+        pixmap.fill();
+        Texture texture = new Texture(pixmap); // must be manually disposed
+        pixmap.dispose();
+        return texture;
+    }
 
 }

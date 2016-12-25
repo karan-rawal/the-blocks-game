@@ -3,14 +3,18 @@ package com.buggy.blocks.stages;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.actors.BoardRectActor;
 import com.buggy.blocks.actors.RectActor;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.RectInputListener;
-
+import com.buggy.blocks.utils.Swipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -103,23 +107,80 @@ public class GameStage extends Stage implements RectInputListener{
         super.dispose();
     }
 
+
+    public void animateSwipes(BoardRectActor actor, Swipe swipe){
+
+        float moveAmountX = SQUARE_WIDTH / 4;
+        float moveAmountY = SQUARE_HEIGHT / 4;
+
+        float directionX = 0;
+        float directionY = 0;
+
+        SequenceAction action = new SequenceAction();
+
+        //in sequence
+        MoveByAction moveAction = new MoveByAction();
+        moveAction.setDuration(0.20f);
+        moveAction.setInterpolation(Interpolation.fade);
+        moveAction.setReverse(true);
+
+        //actor.setOrigin(actor.getWidth()/2, actor.getHeight()/2);
+        ScaleByAction flipAction = new ScaleByAction();
+        flipAction.setDuration(0.20f);
+        flipAction.setAmount(0, -1f);
+        flipAction.setReverse(true);
+
+        switch (swipe){
+            case UP:
+                directionX = 0;
+                directionY = 1;
+                break;
+            case DOWN:
+                directionX = 0;
+                directionY = -1;
+                break;
+            case LEFT:
+                directionX = -1;
+                directionY = 0;
+                break;
+            case RIGHT:
+                directionX = 1;
+                directionY = 0;
+                break;
+            default:
+                Gdx.app.error(LOG_TAG, "Invalid Swipe");
+        }
+
+        float amtX = moveAmountX * directionX;
+        float amtY = moveAmountY * directionY;
+
+        moveAction.setAmount(amtX, amtY);
+        action.addAction(moveAction);
+        action.addAction(flipAction);
+        actor.addAction(action);
+    }
+
     @Override
     public void swipeUp(BoardRectActor actor) {
+        animateSwipes(actor, Swipe.UP);
         Gdx.app.log("SWIPE", "UP " + actor.toString());
     }
 
     @Override
     public void swipeDown(BoardRectActor actor) {
+        animateSwipes(actor, Swipe.DOWN);
         Gdx.app.log("SWIPE", "DOWN " + actor.toString());
     }
 
     @Override
     public void swipeLeft(BoardRectActor actor) {
+        animateSwipes(actor, Swipe.LEFT);
         Gdx.app.log("SWIPE", "LEFT " + actor.toString());
     }
 
     @Override
     public void swipeRight(BoardRectActor actor) {
+        animateSwipes(actor, Swipe.RIGHT);
         Gdx.app.log("SWIPE", "RIGHT " + actor.toString());
     }
 }
