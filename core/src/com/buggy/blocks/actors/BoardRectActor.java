@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.RectInputListener;
+import com.buggy.blocks.utils.RectTexColor;
 
 
 /**
@@ -19,9 +20,8 @@ public class BoardRectActor extends Actor implements Disposable {
 
     private int positionInMatrix[];
     private RectInputListener listener;
-    private Color rectColor;
 
-    private Texture texture;
+    private RectTexColor texColor;
     /**
      * Instantiates a new Board rect actor.
      *
@@ -33,13 +33,11 @@ public class BoardRectActor extends Actor implements Disposable {
      */
     public BoardRectActor(float x, float y, float width, float height, int point[], final RectInputListener listener, Color rectColor) {
         positionInMatrix = point;
-        setDebug(true);
         setBounds(x - (width / 2), y - (height / 2), width, height);
         setOrigin(width / 2, height / 2);
         setColor(rectColor);
-        this.rectColor = rectColor;
         this.listener = listener;
-        texture = GameManager.getTextureForTheColor(rectColor);
+        this.texColor = new RectTexColor(GameManager.getTextureForTheColor(rectColor), rectColor);
         addListener(new ActorGestureListener() {
             @Override
             public void fling(InputEvent event, float velocityX, float velocityY, int button) {
@@ -66,6 +64,7 @@ public class BoardRectActor extends Actor implements Disposable {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        Texture texture = this.texColor.getTexture();
         batch.draw(texture, this.getX(), getY(), this.getOriginX(), this.getOriginY(), this.getWidth(),
                 this.getHeight(), this.getScaleX(), this.getScaleY(), this.getRotation(), 0, 0,
                 texture.getWidth(), texture.getHeight(), false, false);
@@ -77,20 +76,16 @@ public class BoardRectActor extends Actor implements Disposable {
         return name;
     }
 
-    public Color getRectColor() {
-        return rectColor;
+    public RectTexColor getTexColor() {
+        return texColor;
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    public void setTexColor(RectTexColor texColor) {
+        this.texColor = texColor;
     }
 
     @Override
     public void dispose() {
-        texture.dispose();
+        texColor.getTexture().dispose();
     }
 }
