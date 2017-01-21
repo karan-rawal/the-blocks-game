@@ -67,7 +67,7 @@ public class MenuStage extends Stage implements InputProcessor {
         float buttonPadding = camera.viewportHeight / 30;
 
         playButton = new ButtonActor("Play", centerX, centerY, buttonWidth, buttonHeight);
-        optionsButton = new ButtonActor("Options", centerX, centerY - (buttonHeight + buttonPadding), buttonWidth, buttonHeight);
+        optionsButton = new ButtonActor("Review", centerX, centerY - (buttonHeight + buttonPadding), buttonWidth, buttonHeight);
         rateButton = new ButtonActor("Rate", centerX, centerY - (buttonHeight + buttonPadding) * 2, buttonWidth, buttonHeight);
 
         //store the old x and y values of the buttons.
@@ -104,9 +104,9 @@ public class MenuStage extends Stage implements InputProcessor {
         optionsButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.log(LOG_TAG, "Options Button Pressed.");
+                Gdx.app.log(LOG_TAG, "Rate Button Pressed.");
                 AudioManager.playSound(AudioManager.SOUND_BUTTON);
-                GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
+                Gdx.net.openURI(GameConfig.PLAY_STORE_URL);
                 return true;
             }
         });
@@ -124,7 +124,7 @@ public class MenuStage extends Stage implements InputProcessor {
         //add the actors.
         addActor(playButton);
         addActor(optionsButton);
-        addActor(rateButton);
+        //addActor(rateButton);
 
     }
 

@@ -17,4 +17,10 @@ public class GameConfig {
      * The constant SPLASH_SCREEN_DURATION.
      */
     public static int SPLASH_SCREEN_DURATION = 2;
+
+    public static String colors = "#08b4b6 #f67065";
+
+    public static String title = "2 Colors";
+
+    public static String PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.buggy.blocks";
 }

@@ -28,7 +28,6 @@ public class SplashStage extends Stage {
      * Instantiates a new Splash stage.
      */
     public SplashStage() {
-        setDebugAll(true);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT);
@@ -38,7 +37,7 @@ public class SplashStage extends Stage {
         FitViewport viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
         setViewport(viewport);
 
-        title = new Text("Color Blocks", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 80, Color.BLACK);
+        title = new Text(GameConfig.title, GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 80, Color.BLACK);
         addActor(title);
     }
 

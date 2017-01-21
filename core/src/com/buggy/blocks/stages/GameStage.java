@@ -65,7 +65,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
     private Text timeLabel;
     private Text timeValue;
-    private int time = 5;
+    private int time = 60;
 
     private boolean gameStarted = false;
     private boolean gameEnded = false;
@@ -90,7 +90,9 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     }
 
     private void setupColors() {
-        colors = new Color[]{Color.RED, Color.GREEN};
+        Color a = Color.valueOf("#08b4b6");
+        Color b = Color.valueOf("#f67065");
+        colors = new Color[]{a, b};
     }
 
     private void setupBoard() {
@@ -107,8 +109,8 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         float squareHeightWithPadding = boardBounds.getHeight() / BOARD_ROWS;
 
 
-        RectActor rect2 = new RectActor(boardBounds.getX(), boardBounds.getY(), boardBounds.getWidth(), boardBounds.getHeight());
-        addActor(rect2);
+        //RectActor rect2 = new RectActor(boardBounds.getX(), boardBounds.getY(), boardBounds.getWidth(), boardBounds.getHeight());
+        //addActor(rect2);
 
         float initialX = boardBounds.getX() - (squareWidthWithPadding * BOARD_COLUMNS/2) + (squareWidthWithPadding/2);
         float initialY = boardBounds.getY() + (squareHeightWithPadding * BOARD_ROWS/2) - (squareHeightWithPadding/2);
