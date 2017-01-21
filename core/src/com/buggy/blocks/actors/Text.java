@@ -60,4 +60,8 @@ public class Text extends Actor {
     public void dispose() {
         font.dispose();
     }
+
+    public void setText(String message) {
+        this.content = message;
+    }
 }

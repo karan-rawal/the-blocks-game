@@ -10,14 +10,18 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.actors.BoardRectActor;
 import com.buggy.blocks.actors.RectActor;
+import com.buggy.blocks.actors.Text;
 import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
@@ -59,6 +63,17 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
     private boolean isBusy = false;
 
+    private Text timeLabel;
+    private Text timeValue;
+    private int time = 5;
+
+    private boolean gameStarted = false;
+    private boolean gameEnded = false;
+    private Timer.Task gameTimer;
+
+    private int score = 0;
+    private Text scoreLabel;
+
     /**
      * Instantiates a new Game stage.
      */
@@ -75,7 +90,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     }
 
     private void setupColors() {
-        colors = new Color[]{Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW};
+        colors = new Color[]{Color.RED, Color.GREEN};
     }
 
     private void setupBoard() {
@@ -110,7 +125,46 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 rects[i][j] = rect;
             }
         }
-        checkMatch();
+
+        createTimerLabels();
+        createScoreLabel();
+
+    }
+
+    private void createScoreLabel() {
+        scoreLabel = new Text(score + "", camera.viewportWidth / 2, camera.viewportHeight / 2, 50, Color.BLACK);
+        scoreLabel.setY(scoreLabel.getY() - boardBounds.getHeight() / 2 - scoreLabel.getHeight() * 1.5f);
+
+        addActor(scoreLabel);
+    }
+
+/*    private void showNotification(String message){
+        notifier.setText(message);
+
+        SequenceAction seq = new SequenceAction();
+
+        AlphaAction a1 = new AlphaAction();
+        a1.setAlpha(0);
+        a1.setDuration(1);
+        seq.addAction(a1);
+
+        AlphaAction a2 = new AlphaAction();
+        a2.setAlpha(1);
+        a2.setDuration(1);
+        seq.addAction(a2);
+
+    }*/
+
+    private void createTimerLabels() {
+
+        timeValue = new Text(time + "", camera.viewportWidth / 2, camera.viewportHeight / 2, 50, Color.BLACK);
+        timeValue.setY(timeValue.getY() + boardBounds.getHeight() / 2 + timeValue.getHeight() * 1.5f);
+
+        timeLabel = new Text("TIME", camera.viewportWidth / 2, camera.viewportHeight / 2, 80, Color.BLACK);
+        timeLabel.setY(timeValue.getY() + timeLabel.getHeight());
+
+        addActor(timeLabel);
+        addActor(timeValue);
     }
 
     @Override
@@ -120,6 +174,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 rects[i][j].dispose();
             }
         }
+        if (gameTimer.isScheduled()) {
+            gameTimer.cancel();
+        }
+        gameTimer = null;
         super.dispose();
     }
 
@@ -142,7 +200,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
     private MoveToAction getMoveToAction(float x, float y) {
         MoveToAction move = new MoveToAction();
-        move.setDuration(0.10f);
+        move.setDuration(0.20f);
         move.setPosition(x, y);
         move.setInterpolation(Interpolation.circleOut);
         return move;
@@ -234,7 +292,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 nextActor.setTexColor(swipedActor.getTexColor());
                 swipedActor.setTexColor(temp);
 
-                checkMatch();
+                boolean match = checkMatch();
+                if (!match && gameEnded) {
+                    GameManager.changeScreen(GameManager.RESULT_SCREEN, score);
+                }
 
                 return true;
             }
@@ -251,15 +312,44 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeUp(BoardRectActor actor) {
         if (isBusy)
             return;
+
+        if (!gameStarted)
+            startGame();
+
         AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.UP);
         Gdx.app.log("SWIPE", "UP " + actor.toString());
+    }
+
+    private void startGame() {
+        gameStarted = true;
+        gameTimer = new Timer.Task() {
+            @Override
+            public void run() {
+                if (time == 0) {
+                    gameTimer.cancel();
+                    gameEnded = true;
+                    AudioManager.playSound(AudioManager.SOUND_BUZZER);
+                    if (!isBusy) {
+                        GameManager.changeScreen(GameManager.RESULT_SCREEN, score);
+                    }
+                    return;
+                }
+                time--;
+                timeValue.setText(time + "");
+            }
+        };
+        new Timer().scheduleTask(gameTimer, 0, 1, time);
     }
 
     @Override
     public void swipeDown(BoardRectActor actor) {
         if (isBusy)
             return;
+
+        if (!gameStarted)
+            startGame();
+
         AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.DOWN);
         Gdx.app.log("SWIPE", "DOWN " + actor.toString());
@@ -269,6 +359,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeLeft(BoardRectActor actor) {
         if (isBusy)
             return;
+
+        if (!gameStarted)
+            startGame();
+
         AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.LEFT);
         Gdx.app.log("SWIPE", "LEFT " + actor.toString());
@@ -278,12 +372,17 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeRight(BoardRectActor actor) {
         if (isBusy)
             return;
+
+        if (!gameStarted)
+            startGame();
+
         AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.RIGHT);
         Gdx.app.log("SWIPE", "RIGHT " + actor.toString());
     }
 
     public void removeColumn(int colNumber) {
+        incrementScore();
         for (int i = 0; i < BOARD_ROWS; i++) {
 
             final BoardRectActor rect = rects[i][colNumber];
@@ -312,7 +411,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 public boolean act(float delta) {
                     if (rect.getPositionInMatrix()[0] == BOARD_ROWS - 1) {
                         isBusy = false;
-                        checkMatch();
+                        boolean match = checkMatch();
+                        if (!match && gameEnded) {
+                            GameManager.changeScreen(GameManager.RESULT_SCREEN, score);
+                        }
                     }
                     return true;
                 }
@@ -330,6 +432,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     }
 
     public void removeRow(int rowNumber) {
+        incrementScore();
         for (int i = 0; i < BOARD_COLUMNS; i++) {
 
             final BoardRectActor rect = rects[rowNumber][i];
@@ -359,7 +462,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 public boolean act(float delta) {
                     if (rect.getPositionInMatrix()[1] == BOARD_COLUMNS - 1) {
                         isBusy = false;
-                        checkMatch();
+                        boolean match = checkMatch();
+                        if (!match && gameEnded) {
+                            GameManager.changeScreen(GameManager.RESULT_SCREEN, score);
+                        }
                     }
                     return true;
                 }
@@ -374,6 +480,11 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
             rect.addAction(action);
         }
+    }
+
+    private void incrementScore() {
+        score++;
+        scoreLabel.setText(score + "");
     }
 
     public boolean checkMatch() {
@@ -419,7 +530,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public boolean keyDown(int keyCode) {
         if (keyCode == Input.Keys.BACK) {
             Gdx.app.log(LOG_TAG, "Back key pressed.");
-            GameManager.changeScreen(GameManager.MENU_SCREEN);
+            GameManager.changeScreen(GameManager.MENU_SCREEN, -1);
             return true;
         }
         return false;

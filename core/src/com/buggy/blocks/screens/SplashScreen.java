@@ -45,7 +45,7 @@ public class SplashScreen implements Screen {
             @Override
             public void run() {
                 Gdx.app.log(LOG_TAG, "Time passed, now we can create game screen");
-                GameManager.changeScreen(GameManager.MENU_SCREEN);
+                GameManager.changeScreen(GameManager.MENU_SCREEN, -1);
             }
         }, GameConfig.SPLASH_SCREEN_DURATION);
     }

@@ -94,7 +94,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Play Button Pressed.");
-                GameManager.changeScreen(GameManager.GAME_SCREEN);
+                GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
         });
@@ -103,7 +103,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Options Button Pressed.");
-                GameManager.changeScreen(GameManager.GAME_SCREEN);
+                GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
         });
@@ -112,7 +112,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Rate Button Pressed.");
-                GameManager.changeScreen(GameManager.GAME_SCREEN);
+                GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
         });

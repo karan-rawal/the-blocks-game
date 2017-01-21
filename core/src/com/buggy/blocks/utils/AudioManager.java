@@ -20,8 +20,14 @@ public class AudioManager {
      */
     public static final int SOUND_WOOSH = 2;
 
+    /**
+     * The constant SOUND_BUZZER.
+     */
+    public static final int SOUND_BUZZER = 3;
+
     private static Sound flipSound;
     private static Sound wooshSound;
+    private static Sound buzzerSound;
 
     /**
      * Initializes the audios.
@@ -29,6 +35,7 @@ public class AudioManager {
     public static void initialize() {
         flipSound = Gdx.audio.newSound(Gdx.files.internal("audio/flip.wav"));
         wooshSound = Gdx.audio.newSound(Gdx.files.internal("audio/woosh.wav"));
+        buzzerSound = Gdx.audio.newSound(Gdx.files.internal("audio/buzzer.wav"));
     }
 
     /**
@@ -47,6 +54,9 @@ public class AudioManager {
                 flipSound.stop();
                 wooshSound.play(0.1f);
                 break;
+            case SOUND_BUZZER:
+                buzzerSound.play(0.05f);
+                break;
         }
     }
 
@@ -56,5 +66,6 @@ public class AudioManager {
     public static void dispose() {
         flipSound.dispose();
         wooshSound.dispose();
+        buzzerSound.dispose();
     }
 }

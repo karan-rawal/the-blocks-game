@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.screens.GameScreen;
 import com.buggy.blocks.screens.MenuScreen;
+import com.buggy.blocks.screens.ResultScreen;
 import com.buggy.blocks.screens.SplashScreen;
 
 /**
@@ -36,6 +37,11 @@ public class GameManager {
      */
     public static final int SPLASH_SCREEN = 2;
 
+    /**
+     * The constant RESULT_SCREEN.
+     */
+    public static final int RESULT_SCREEN = 3;
+
     private static TextureAtlas textureAtlas;
 
     /**
@@ -46,7 +52,7 @@ public class GameManager {
     public static void initialize(BuggyGame game) {
         GameManager.game = game;
         textureAtlas = new TextureAtlas("images/blockpack.atlas");
-        GameManager.game.setScreen(new SplashScreen(game));
+        GameManager.game.setScreen(new MenuScreen(game));
     }
 
     /**
@@ -54,7 +60,7 @@ public class GameManager {
      *
      * @param screen_no the screen no
      */
-    public static void changeScreen(int screen_no) {
+    public static void changeScreen(int screen_no, int score) {
         Gdx.app.log(LOG_TAG, "Changing screen.");
         Screen newScreen = null;
 
@@ -67,6 +73,9 @@ public class GameManager {
                 break;
             case MENU_SCREEN:
                 newScreen = new MenuScreen(game);
+                break;
+            case RESULT_SCREEN:
+                newScreen = new ResultScreen(game, score);
                 break;
             default:
                 Gdx.app.error(LOG_TAG, "Invalid Screen");
