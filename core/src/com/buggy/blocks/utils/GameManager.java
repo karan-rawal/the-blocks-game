@@ -52,7 +52,7 @@ public class GameManager {
     public static void initialize(BuggyGame game) {
         GameManager.game = game;
         textureAtlas = new TextureAtlas("images/blockpack.atlas");
-        GameManager.game.setScreen(new MenuScreen(game));
+        GameManager.game.setScreen(new SplashScreen(game));
     }
 
     /**

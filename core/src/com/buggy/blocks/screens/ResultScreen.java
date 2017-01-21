@@ -3,6 +3,7 @@ package com.buggy.blocks.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Timer;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.stages.MenuStage;
 import com.buggy.blocks.stages.ResultStage;
@@ -30,13 +31,18 @@ public class ResultScreen implements Screen {
     public ResultScreen(BuggyGame game, int score) {
         this.game = game;
         this.stage = new ResultStage(score);
-        Gdx.input.setInputProcessor(stage);
     }
 
 
     @Override
     public void show() {
         Gdx.app.log(LOG_TAG, "Show Called");
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Gdx.input.setInputProcessor(stage);
+            }
+        },0.2f);
     }
 
     @Override

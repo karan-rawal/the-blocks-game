@@ -174,7 +174,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                 rects[i][j].dispose();
             }
         }
-        if (gameTimer.isScheduled()) {
+        if (gameTimer!=null && gameTimer.isScheduled()) {
             gameTimer.cancel();
         }
         gameTimer = null;
