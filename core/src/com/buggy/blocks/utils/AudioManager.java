@@ -25,9 +25,15 @@ public class AudioManager {
      */
     public static final int SOUND_BUZZER = 3;
 
+    /**
+     * The constant SOUND_BUTTON.
+     */
+    public static final int SOUND_BUTTON = 4;
+
     private static Sound flipSound;
     private static Sound wooshSound;
     private static Sound buzzerSound;
+    private static Sound buttonSound;
 
     /**
      * Initializes the audios.
@@ -36,6 +42,7 @@ public class AudioManager {
         flipSound = Gdx.audio.newSound(Gdx.files.internal("audio/flip.wav"));
         wooshSound = Gdx.audio.newSound(Gdx.files.internal("audio/woosh.wav"));
         buzzerSound = Gdx.audio.newSound(Gdx.files.internal("audio/buzzer.wav"));
+        buttonSound = Gdx.audio.newSound(Gdx.files.internal("audio/button.wav"));
     }
 
     /**
@@ -52,10 +59,13 @@ public class AudioManager {
             case SOUND_WOOSH:
                 //we dont want flip to be played when whooshing.
                 flipSound.stop();
-                wooshSound.play(0.1f);
+                wooshSound.play(0.3f);
                 break;
             case SOUND_BUZZER:
-                buzzerSound.play(0.05f);
+                buzzerSound.play(0.2f);
+                break;
+            case SOUND_BUTTON:
+                buttonSound.play();
                 break;
         }
     }
@@ -67,5 +77,6 @@ public class AudioManager {
         flipSound.dispose();
         wooshSound.dispose();
         buzzerSound.dispose();
+        buttonSound.dispose();
     }
 }

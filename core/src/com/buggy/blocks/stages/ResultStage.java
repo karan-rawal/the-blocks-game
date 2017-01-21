@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.actors.ButtonActor;
 import com.buggy.blocks.actors.Text;
+import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
+import com.buggy.blocks.utils.PreferencesManager;
 
 /**
  * Created by karan on 21/1/17.
@@ -29,6 +31,11 @@ public class ResultStage extends Stage {
     private Text scoreValueLabel;
     private int score;
 
+    //highScore
+    private Text highScoreLabel;
+    private Text highScoreValueLabel;
+    private int highScore;
+
 
     private ButtonActor playButton;
     private ButtonActor mainMenu;
@@ -40,6 +47,13 @@ public class ResultStage extends Stage {
     public ResultStage(int score) {
 
         this.score = score;
+
+        highScore = PreferencesManager.getPreference(PreferencesManager.PREF_SCORE);
+
+        if(highScore < score){
+            highScore = score;
+            PreferencesManager.setPreference(PreferencesManager.PREF_SCORE, score);
+        }
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT);
@@ -61,6 +75,7 @@ public class ResultStage extends Stage {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Play Button Pressed.");
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
@@ -70,6 +85,7 @@ public class ResultStage extends Stage {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Options Button Pressed.");
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.MENU_SCREEN, -1);
                 return true;
             }
@@ -98,13 +114,21 @@ public class ResultStage extends Stage {
     }
 
     private void createLabels() {
-        scoreLabel = new Text("You Scored", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 80, Color.BLACK);
+        scoreLabel = new Text("Score", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 40, Color.BLACK);
         scoreLabel.setY(scoreLabel.getY() + scoreLabel.getHeight() * 2.5f);
         addActor(scoreLabel);
 
-        scoreValueLabel = new Text("" + score, GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 80, Color.BLACK);
+        scoreValueLabel = new Text("" + score, GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 40, Color.BLACK);
         scoreValueLabel.setY(scoreValueLabel.getY() + scoreValueLabel.getHeight());
         addActor(scoreValueLabel);
+
+        highScoreLabel = new Text("High Score", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 40, Color.BLACK);
+        highScoreLabel.setY(scoreLabel.getY() + highScoreLabel.getHeight() * 4f);
+        addActor(highScoreLabel);
+
+        highScoreValueLabel = new Text("" + highScore, GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 40, Color.BLACK);
+        highScoreValueLabel.setY(highScoreLabel.getY() - highScoreValueLabel.getHeight() * 1.5f);
+        addActor(highScoreValueLabel);
     }
 
     @Override

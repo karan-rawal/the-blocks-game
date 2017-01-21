@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.actors.ButtonActor;
+import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
 
@@ -94,6 +95,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Play Button Pressed.");
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
@@ -103,6 +105,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Options Button Pressed.");
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }
@@ -112,6 +115,7 @@ public class MenuStage extends Stage implements InputProcessor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Rate Button Pressed.");
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }

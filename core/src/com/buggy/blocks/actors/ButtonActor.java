@@ -26,9 +26,6 @@ public class ButtonActor extends Group {
      * @param height the height
      */
     public ButtonActor(String label, float x, float y, float width, float height) {
-
-        setDebug(true);
-
         text = new Text(label, width / 2, height / 2, FONT_SIZE, BUTTON_COLOR);
         buttonBorder = new RectActor(width / 2, height / 2, width, height);
         addActor(text);
