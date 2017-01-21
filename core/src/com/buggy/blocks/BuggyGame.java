@@ -3,6 +3,7 @@ package com.buggy.blocks;
 import com.badlogic.gdx.Game;
 import com.buggy.blocks.screens.SplashScreen;
 import com.buggy.blocks.utils.AndroidInterfaces;
+import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameManager;
 
 /**
@@ -23,11 +24,13 @@ public class BuggyGame extends Game {
     @Override
     public void create() {
         GameManager.initialize(this);
+        AudioManager.initialize();
     }
 
     @Override
     public void dispose() {
         GameManager.getTextureAtlas().dispose();
+        AudioManager.dispose();
         super.dispose();
     }
 }

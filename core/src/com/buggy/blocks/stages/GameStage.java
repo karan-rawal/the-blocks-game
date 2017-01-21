@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.actors.BoardRectActor;
 import com.buggy.blocks.actors.RectActor;
+import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.RectInputListener;
@@ -133,7 +134,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
     private MoveByAction getMoveAction() {
         MoveByAction moveAction = new MoveByAction();
-        moveAction.setDuration(0.20f);
+        moveAction.setDuration(0.10f);
         moveAction.setInterpolation(Interpolation.circleOut);
         moveAction.setReverse(true);
         return moveAction;
@@ -141,7 +142,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
     private MoveToAction getMoveToAction(float x, float y) {
         MoveToAction move = new MoveToAction();
-        move.setDuration(0.20f);
+        move.setDuration(0.10f);
         move.setPosition(x, y);
         move.setInterpolation(Interpolation.circleOut);
         return move;
@@ -250,6 +251,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeUp(BoardRectActor actor) {
         if (isBusy)
             return;
+        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.UP);
         Gdx.app.log("SWIPE", "UP " + actor.toString());
     }
@@ -258,6 +260,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeDown(BoardRectActor actor) {
         if (isBusy)
             return;
+        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.DOWN);
         Gdx.app.log("SWIPE", "DOWN " + actor.toString());
     }
@@ -266,6 +269,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeLeft(BoardRectActor actor) {
         if (isBusy)
             return;
+        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.LEFT);
         Gdx.app.log("SWIPE", "LEFT " + actor.toString());
     }
@@ -274,6 +278,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     public void swipeRight(BoardRectActor actor) {
         if (isBusy)
             return;
+        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.RIGHT);
         Gdx.app.log("SWIPE", "RIGHT " + actor.toString());
     }
@@ -316,6 +321,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
             SequenceAction action = new SequenceAction();
             action.addAction(move);
             action.addAction(completeAction);
+            AudioManager.playSound(AudioManager.SOUND_WOOSH);
             action.addAction(reset);
             action.addAction(onResetComplete);
 
@@ -362,6 +368,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
             SequenceAction action = new SequenceAction();
             action.addAction(move);
             action.addAction(completeAction);
+            AudioManager.playSound(AudioManager.SOUND_WOOSH);
             action.addAction(reset);
             action.addAction(onResetComplete);
 
