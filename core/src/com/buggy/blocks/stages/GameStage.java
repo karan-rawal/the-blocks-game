@@ -1,6 +1,8 @@
 package com.buggy.blocks.stages;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,7 +29,7 @@ import java.util.Random;
  * Stage for the game screen.
  * Created by karan on 20/12/16.
  */
-public class GameStage extends Stage implements RectInputListener{
+public class GameStage extends Stage implements RectInputListener, InputProcessor {
 
     /**
      * The Log tag.
@@ -406,4 +408,13 @@ public class GameStage extends Stage implements RectInputListener{
         return false;
     }
 
+    @Override
+    public boolean keyDown(int keyCode) {
+        if (keyCode == Input.Keys.BACK) {
+            Gdx.app.log(LOG_TAG, "Back key pressed.");
+            GameManager.changeScreen(GameManager.MENU_SCREEN);
+            return true;
+        }
+        return false;
+    }
 }
