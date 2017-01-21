@@ -1,6 +1,8 @@
 package com.buggy.blocks.stages;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.actors.ButtonActor;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
@@ -19,7 +23,7 @@ import com.buggy.blocks.utils.GameManager;
  * Stage for the menu screen.
  * Created by karan on 20/12/16.
  */
-public class MenuStage extends Stage {
+public class MenuStage extends Stage implements InputProcessor {
 
     private final MoveToAction rateMoveAction;
     private final MoveToAction optionsMoveAction;
@@ -34,6 +38,11 @@ public class MenuStage extends Stage {
     private ButtonActor playButton;
     private ButtonActor optionsButton;
     private ButtonActor rateButton;
+
+    //denotes if back key was pressed.
+    private boolean backAlreadyClicked = false;
+    //the task that resets backAlreadyClicked.
+    private Timer.Task backButtonTask;
 
 
     /**
@@ -166,8 +175,47 @@ public class MenuStage extends Stage {
     }
 
     @Override
+    public boolean keyDown(int keyCode) {
+        if (keyCode == Input.Keys.BACK) {
+            Gdx.app.log(LOG_TAG, "Back key pressed.");
+
+            //if back was already pressed, exit the application.
+            if (backAlreadyClicked) {
+                BuggyGame.android.toast("Thank you for playing my game :)");
+                Gdx.app.exit();
+                this.dispose();
+                //cancel the task if it is not null.
+                if (null != backButtonTask) {
+                    backButtonTask.cancel();
+                }
+            } else {
+                //if back was not pressed, make the backAlreadyClicked = true.
+                backAlreadyClicked = true;
+                BuggyGame.android.toast("Press back again to quit :(");
+
+                //initialize the task
+                backButtonTask = new Timer.Task() {
+                    @Override
+                    public void run() {
+                        Gdx.app.log(LOG_TAG, "Back button was not pressed in time. Making backAlreadyClicked = false");
+                        backAlreadyClicked = false;
+                        backButtonTask = null;
+                    }
+                };
+
+                //schedule the task.
+                Timer.schedule(backButtonTask, 2);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void dispose() {
-        playButton.dispose();
         super.dispose();
+        playButton.dispose();
+        optionsButton.dispose();
+        rateButton.dispose();
     }
 }

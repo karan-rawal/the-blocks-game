@@ -37,6 +37,7 @@ public class SplashScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log(LOG_TAG, "Show called");
+        Gdx.input.setCatchBackKey(true); //to make the game interrupt back key.
         Gdx.input.setInputProcessor(stage);
 
         //Schedule a timer to load the gamescreen.
