@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.buggy.blocks.screens.SplashScreen;
 import com.buggy.blocks.utils.AndroidInterfaces;
 import com.buggy.blocks.utils.AudioManager;
+import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.PreferencesManager;
 
@@ -20,6 +21,15 @@ public class BuggyGame extends Game {
 
     public BuggyGame(AndroidInterfaces androidInterface) {
         android = androidInterface;
+        android.initializeAd();
+    }
+
+    public static void requestNewAd() {
+        android.requestNewInterstitial();
+    }
+
+    public static void showAd() {
+        android.showAd();
     }
 
     @Override

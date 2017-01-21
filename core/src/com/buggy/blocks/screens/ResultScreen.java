@@ -37,6 +37,7 @@ public class ResultScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log(LOG_TAG, "Show Called");
+        BuggyGame.showAd();
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {

@@ -5,6 +5,7 @@ package com.buggy.blocks.utils;
  * Created by karan on 17/12/16.
  */
 public class GameConfig {
+    public static final String INTERSTITIAL_AD_ID = "ca-app-pub-5967732079191215/6144779686";
     /**
      * The constant GAME_WIDTH.
      */

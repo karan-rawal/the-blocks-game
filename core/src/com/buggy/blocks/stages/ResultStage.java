@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.actors.ButtonActor;
 import com.buggy.blocks.actors.Text;
 import com.buggy.blocks.utils.AudioManager;
@@ -77,6 +78,7 @@ public class ResultStage extends Stage {
                 Gdx.app.log(LOG_TAG, "Play Button Pressed.");
                 AudioManager.playSound(AudioManager.SOUND_BUTTON);
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
+                BuggyGame.requestNewAd();
                 return true;
             }
         });

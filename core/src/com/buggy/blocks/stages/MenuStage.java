@@ -96,6 +96,7 @@ public class MenuStage extends Stage implements InputProcessor {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.log(LOG_TAG, "Play Button Pressed.");
                 AudioManager.playSound(AudioManager.SOUND_BUTTON);
+                BuggyGame.requestNewAd();
                 GameManager.changeScreen(GameManager.GAME_SCREEN, -1);
                 return true;
             }

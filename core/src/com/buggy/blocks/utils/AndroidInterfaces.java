@@ -5,4 +5,7 @@ package com.buggy.blocks.utils;
  */
 public interface AndroidInterfaces {
     public void toast(final String message);
+    public void initializeAd();
+    public void requestNewInterstitial();
+    public void showAd();
 }
