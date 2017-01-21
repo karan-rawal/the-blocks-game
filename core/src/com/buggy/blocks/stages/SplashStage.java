@@ -38,7 +38,7 @@ public class SplashStage extends Stage {
         FitViewport viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
         setViewport(viewport);
 
-        title = new Text("Color Blocks", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 40, Color.BLACK);
+        title = new Text("Color Blocks", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 80, Color.BLACK);
         addActor(title);
     }
 

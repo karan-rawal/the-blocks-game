@@ -2,9 +2,14 @@ package com.buggy.blocks.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.actors.ButtonActor;
 import com.buggy.blocks.utils.GameConfig;
@@ -16,6 +21,9 @@ import com.buggy.blocks.utils.GameManager;
  */
 public class MenuStage extends Stage {
 
+    private final MoveToAction rateMoveAction;
+    private final MoveToAction optionsMoveAction;
+    private final MoveToAction playMoveAction;
     /**
      * The Log tag.
      */
@@ -24,6 +32,8 @@ public class MenuStage extends Stage {
     private OrthographicCamera camera;
 
     private ButtonActor playButton;
+    private ButtonActor optionsButton;
+    private ButtonActor rateButton;
 
 
     /**
@@ -38,18 +48,121 @@ public class MenuStage extends Stage {
         FitViewport viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
         setViewport(viewport);
 
-        playButton = new ButtonActor("Play", GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 400, 80);
+        float centerX = camera.viewportWidth / 2;
+        float centerY = camera.viewportHeight / 2;
 
-        addActor(playButton);
+        float buttonWidth = camera.viewportWidth / 2.2f;
+        float buttonHeight = camera.viewportHeight / 10;
 
+        float buttonPadding = camera.viewportHeight / 30;
+
+        playButton = new ButtonActor("Play", centerX, centerY, buttonWidth, buttonHeight);
+        optionsButton = new ButtonActor("Options", centerX, centerY - (buttonHeight + buttonPadding), buttonWidth, buttonHeight);
+        rateButton = new ButtonActor("Rate", centerX, centerY - (buttonHeight + buttonPadding) * 2, buttonWidth, buttonHeight);
+
+        //store the old x and y values of the buttons.
+        float playOldX = playButton.getX();
+        float playOldY = playButton.getY();
+
+        float optionsOldX = optionsButton.getX();
+        float optionsOldY = optionsButton.getY();
+
+        float rateOldX = rateButton.getX();
+        float rateOldY = rateButton.getY();
+
+        //set the x and y values of the buttons to somewhere below the camera.
+        playButton.setY(-camera.viewportHeight);
+        optionsButton.setY(-(camera.viewportHeight + optionsButton.getHeight()));
+        rateButton.setY(-(camera.viewportHeight + rateButton.getHeight() + optionsButton.getHeight()));
+
+        //get the animations.
+        playMoveAction = getMoveAction(playOldX, playOldY);
+        optionsMoveAction = getMoveAction(optionsOldX, optionsOldY);
+        rateMoveAction = getMoveAction(rateOldX, rateOldY);
+
+        //attach the listeners.
         playButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.log(LOG_TAG, "TOUCHED!!!");
+                Gdx.app.log(LOG_TAG, "Play Button Pressed.");
                 GameManager.changeScreen(GameManager.GAME_SCREEN);
                 return true;
             }
         });
+
+        optionsButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log(LOG_TAG, "Options Button Pressed.");
+                GameManager.changeScreen(GameManager.GAME_SCREEN);
+                return true;
+            }
+        });
+
+        rateButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.log(LOG_TAG, "Rate Button Pressed.");
+                GameManager.changeScreen(GameManager.GAME_SCREEN);
+                return true;
+            }
+        });
+
+        //add the actors.
+        addActor(playButton);
+        addActor(optionsButton);
+        addActor(rateButton);
+
+    }
+
+    /**
+     * Make actors act.
+     */
+    public void makeActorsAct() {
+        addActionToButtons(playMoveAction, optionsMoveAction, rateMoveAction);
+    }
+
+
+    /**
+     * adds action to buttons.
+     *
+     * @param action1
+     * @param action2
+     * @param action3
+     */
+    private void addActionToButtons(final MoveToAction action1, final MoveToAction action2, final MoveToAction action3) {
+        playButton.addAction(getAnimationSequence(action1, 0.2f));
+        optionsButton.addAction(getAnimationSequence(action2, 0.4f));
+        rateButton.addAction(getAnimationSequence(action3, 0.6f));
+    }
+
+    /**
+     * Creates a sequence of the action with a delay before it.
+     *
+     * @param action
+     * @param delay
+     * @return
+     */
+    private SequenceAction getAnimationSequence(MoveToAction action, float delay) {
+        SequenceAction sequence = new SequenceAction();
+        sequence.addAction(new DelayAction(delay));
+        sequence.addAction(action);
+        return sequence;
+    }
+
+    /**
+     * returns a move to action.
+     *
+     * @param toX
+     * @param toY
+     * @return
+     */
+    private MoveToAction getMoveAction(float toX, float toY) {
+        MoveToAction action = new MoveToAction();
+        action.setDuration(0.5f);
+        action.setInterpolation(Interpolation.circleOut);
+        action.setPosition(toX, toY);
+        return action;
     }
 
     @Override

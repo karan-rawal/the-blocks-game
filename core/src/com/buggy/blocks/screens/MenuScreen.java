@@ -37,6 +37,7 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         Gdx.app.log(LOG_TAG, "Show Called");
+        stage.makeActorsAct();
     }
 
     @Override

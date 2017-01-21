@@ -16,5 +16,5 @@ public class GameConfig {
     /**
      * The constant SPLASH_SCREEN_DURATION.
      */
-    public static int SPLASH_SCREEN_DURATION = 4;
+    public static int SPLASH_SCREEN_DURATION = 2;
 }
