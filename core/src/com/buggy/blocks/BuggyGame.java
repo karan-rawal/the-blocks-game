@@ -1,6 +1,7 @@
 package com.buggy.blocks;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.buggy.blocks.screens.SplashScreen;
 import com.buggy.blocks.utils.AndroidInterfaces;
 import com.buggy.blocks.utils.AudioManager;
@@ -12,6 +13,8 @@ import com.buggy.blocks.utils.PreferencesManager;
  * Main game class.
  */
 public class BuggyGame extends Game {
+
+    public static final String LOG_TAG = "BuggyGame";
 
     public static AndroidInterfaces android = null;
 
@@ -51,6 +54,21 @@ public class BuggyGame extends Game {
 
     public static void showAd() {
         android.showAd();
+    }
+
+    public void submitStoredScore(){
+
+        int firstLaunch = PreferencesManager.getPreference(PreferencesManager.PREF_FIRST_LAUNCH);
+        Gdx.app.log(LOG_TAG, PreferencesManager.getPreference(PreferencesManager.PREF_FIRST_LAUNCH) + " First launch");
+
+        if(0 == firstLaunch){
+            PreferencesManager.setPreference(PreferencesManager.PREF_FIRST_LAUNCH, 1);
+            int highScore = PreferencesManager.getPreference(PreferencesManager.PREF_SCORE);
+            if(0 != highScore){
+                Gdx.app.log(LOG_TAG, "Preparing to submit high score.");
+                android.submitStoredScore(highScore);
+            }
+        }
     }
 
     @Override

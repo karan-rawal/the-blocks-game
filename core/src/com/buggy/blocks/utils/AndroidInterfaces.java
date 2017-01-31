@@ -16,4 +16,5 @@ public interface AndroidInterfaces {
     public void submitScore(int score);
     public boolean isSignedIn();
     public void showScore();
+    public void submitStoredScore(int highScore);
 }

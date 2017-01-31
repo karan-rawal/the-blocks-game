@@ -15,7 +15,12 @@ import com.buggy.blocks.utils.AndroidInterfaces;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.GameHelper;
 
 public class AndroidLauncher extends AndroidApplication implements AndroidInterfaces {
@@ -28,13 +33,16 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
     //game services
     private GameHelper gameHelper;
 
+    private BuggyGame game;
+
     private static final int SHOW_LEADERBOARD_REQ_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new BuggyGame((AndroidInterfaces) this), config);
+        game = new BuggyGame((AndroidInterfaces) this);
+        initialize(game, config);
     }
 
     /**
@@ -117,6 +125,7 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
             @Override
             public void onSignInSucceeded() {
                 Log.d(LOG_TAG, "Sign In Succeeded");
+                game.submitStoredScore();
             }
         };
 
@@ -163,6 +172,7 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
             Log.d(LOG_TAG, "Submitting score : " + score);
             Games.Leaderboards.submitScore(gameHelper.getApiClient(),
                     getString(R.string.leaderboard_time), score);
+            AchievementsManager.unlockAchievement(score, gameHelper, this);
         }
     }
 
@@ -184,10 +194,34 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
     @Override
     public void showScore()
     {
-        if (isSignedIn() == true) {
+        if (isSignedIn()) {
             Log.d(LOG_TAG,"Requesting for scores.");
             startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(),
                     getString(R.string.leaderboard_time)), SHOW_LEADERBOARD_REQ_CODE);
+        }
+    }
+
+    @Override
+    public void submitStoredScore(final int highScore) {
+        Log.d(LOG_TAG, "Attempting to submit stored score.");
+        if(isSignedIn()){
+
+            PendingResult result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(gameHelper.getApiClient(), getString(R.string.leaderboard_time), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_PUBLIC);
+
+            result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult arg0) {
+                    LeaderboardScore c = arg0.getScore();
+                    Log.d("SCORE = ", c.getRawScore() + "");
+                    long score = c.getRawScore();
+                    if(score < highScore){
+                        toast("Your local highscore has been submitted successfully.");
+                        submitScore(highScore);
+                    }
+                }
+
+            });
         }
     }
 
