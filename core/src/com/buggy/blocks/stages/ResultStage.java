@@ -56,6 +56,8 @@ public class ResultStage extends Stage {
             PreferencesManager.setPreference(PreferencesManager.PREF_SCORE, score);
         }
 
+        BuggyGame.submitScore(score);
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT);
         camera.position.set(GameConfig.GAME_WIDTH / 2, GameConfig.GAME_HEIGHT / 2, 0);

@@ -40,6 +40,8 @@ public class SplashScreen implements Screen {
         Gdx.input.setCatchBackKey(true); //to make the game interrupt back key.
         Gdx.input.setInputProcessor(stage);
 
+        BuggyGame.signIn();
+
         //Schedule a timer to load the gamescreen.
         Timer.schedule(new Timer.Task() {
             @Override

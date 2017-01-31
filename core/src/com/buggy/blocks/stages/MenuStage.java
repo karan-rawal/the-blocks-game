@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.buggy.blocks.BuggyGame;
 import com.buggy.blocks.actors.ButtonActor;
+import com.buggy.blocks.actors.ImageButton;
 import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
@@ -44,6 +45,9 @@ public class MenuStage extends Stage implements InputProcessor {
     private boolean backAlreadyClicked = false;
     //the task that resets backAlreadyClicked.
     private Timer.Task backButtonTask;
+
+    //image buttons
+    private ImageButton leaderboardButton;
 
 
     /**
@@ -127,6 +131,25 @@ public class MenuStage extends Stage implements InputProcessor {
         addActor(optionsButton);
         //addActor(rateButton);
 
+
+
+        if (BuggyGame.isSignedIn()) {
+            //ImageButtons
+            leaderboardButton = new ImageButton("images/leaderboard.png", camera.viewportWidth / 2, optionsOldY);
+            leaderboardButton.setY(leaderboardButton.getY() - optionsButton.getHeight());
+
+            addActor(leaderboardButton);
+
+            leaderboardButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    Gdx.app.log(LOG_TAG, "Leaderboard pressed");
+                    AudioManager.playSound(AudioManager.SOUND_BUTTON);
+                    BuggyGame.showLeaderboard();
+                    return true;
+                }
+            });
+        }
     }
 
     /**

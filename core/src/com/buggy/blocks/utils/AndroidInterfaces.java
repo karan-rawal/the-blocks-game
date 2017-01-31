@@ -8,4 +8,12 @@ public interface AndroidInterfaces {
     public void initializeAd();
     public void requestNewInterstitial();
     public void showAd();
+
+    //game services
+    public void initializeGamesServices();
+    public void signIn();
+    public void signOut();
+    public void submitScore(int score);
+    public boolean isSignedIn();
+    public void showScore();
 }

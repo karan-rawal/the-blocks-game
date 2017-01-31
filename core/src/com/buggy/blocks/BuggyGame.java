@@ -22,6 +22,27 @@ public class BuggyGame extends Game {
     public BuggyGame(AndroidInterfaces androidInterface) {
         android = androidInterface;
         android.initializeAd();
+        android.initializeGamesServices();
+    }
+
+    public static boolean isSignedIn(){
+        return android.isSignedIn();
+    }
+
+    public static void signIn(){
+        android.signIn();
+    }
+
+    public static void signOut(){
+        android.signOut();
+    }
+
+    public static void showLeaderboard(){
+        android.showScore();
+    }
+
+    public static void submitScore(int score){
+        android.submitScore(score);
     }
 
     public static void requestNewAd() {
@@ -34,9 +55,9 @@ public class BuggyGame extends Game {
 
     @Override
     public void create() {
-        GameManager.initialize(this);
-        AudioManager.initialize();
         PreferencesManager.initialize();
+        AudioManager.initialize();
+        GameManager.initialize(this);
     }
 
     @Override
