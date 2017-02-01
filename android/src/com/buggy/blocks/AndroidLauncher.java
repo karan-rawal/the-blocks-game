@@ -212,12 +212,18 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
 
                 @Override
                 public void onResult(Leaderboards.LoadPlayerScoreResult arg0) {
-                    LeaderboardScore c = arg0.getScore();
-                    Log.d("SCORE = ", c.getRawScore() + "");
-                    long score = c.getRawScore();
-                    if(score < highScore){
-                        toast("Your local highscore has been submitted successfully.");
+                    try {
+                        LeaderboardScore c = arg0.getScore();
+                        Log.d("SCORE = ", c.getRawScore() + "");
+                        long score = c.getRawScore();
+                        if (score < highScore) {
+                            toast("Your local high-score has been updated successfully. :)");
+                            submitScore(highScore);
+                        }
+                    }catch (Exception e){
                         submitScore(highScore);
+                        Log.e(LOG_TAG, e.getMessage());
+                        toast("Your local high-score has been set on leaderboard. :)");
                     }
                 }
 

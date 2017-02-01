@@ -62,7 +62,7 @@ public class BuggyGame extends Game {
         Gdx.app.log(LOG_TAG, PreferencesManager.getPreference(PreferencesManager.PREF_FIRST_LAUNCH) + " First launch");
 
         if(0 == firstLaunch){
-            PreferencesManager.setPreference(PreferencesManager.PREF_FIRST_LAUNCH, 1);
+            //PreferencesManager.setPreference(PreferencesManager.PREF_FIRST_LAUNCH, 1);
             int highScore = PreferencesManager.getPreference(PreferencesManager.PREF_SCORE);
             if(0 != highScore){
                 Gdx.app.log(LOG_TAG, "Preparing to submit high score.");

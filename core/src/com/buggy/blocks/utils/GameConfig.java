@@ -17,7 +17,7 @@ public class GameConfig {
     /**
      * The constant SPLASH_SCREEN_DURATION.
      */
-    public static int SPLASH_SCREEN_DURATION = 2;
+    public static int SPLASH_SCREEN_DURATION = 4;
 
     public static String colors = "#08b4b6 #f67065";
 
