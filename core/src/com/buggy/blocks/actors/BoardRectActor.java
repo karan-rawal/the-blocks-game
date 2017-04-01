@@ -64,16 +64,28 @@ public class BoardRectActor extends Actor implements Disposable {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        Texture texture = this.texColor.getTexture();
-        batch.draw(texture, this.getX(), getY(), this.getOriginX(), this.getOriginY(), this.getWidth(),
-                this.getHeight(), this.getScaleX(), this.getScaleY(), this.getRotation(), 0, 0,
-                texture.getWidth(), texture.getHeight(), false, false);
+        if (this.texColor != null) {
+            Texture texture = this.texColor.getTexture();
+            batch.draw(texture, this.getX(), getY(), this.getOriginX(), this.getOriginY(), this.getWidth(),
+                    this.getHeight(), this.getScaleX(), this.getScaleY(), this.getRotation(), 0, 0,
+                    texture.getWidth(), texture.getHeight(), false, false);
+
+        }
     }
 
     @Override
     public String toString() {
         String name = String.format("Button at [%d, %d]", positionInMatrix[0], positionInMatrix[1]);
         return name;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        super.setColor(color);
+        if(texColor!= null) {
+            texColor.getTexture().dispose();
+        }
+        texColor = new RectTexColor(GameManager.getTextureForTheColor(color), color);
     }
 
     public RectTexColor getTexColor() {

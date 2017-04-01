@@ -8,23 +8,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.buggy.blocks.actors.ArrowActor;
 import com.buggy.blocks.actors.BoardRectActor;
 import com.buggy.blocks.actors.RectActor;
 import com.buggy.blocks.actors.Text;
 import com.buggy.blocks.utils.AudioManager;
 import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
+import com.buggy.blocks.utils.PreferencesManager;
 import com.buggy.blocks.utils.RectInputListener;
 import com.buggy.blocks.utils.RectTexColor;
 import com.buggy.blocks.utils.Swipe;
@@ -74,6 +78,23 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
     private int score = 0;
     private Text scoreLabel;
 
+
+    //for tutorial
+    ArrowActor tutorialActor1;
+    Vector2 tutorialPosFrom1;
+    Vector2 tutorialPosFrom2;
+    Vector2 tutorialPosFrom3;
+
+    Vector2 tutorialPosTo1;
+    Vector2 tutorialPosTo2;
+    Vector2 tutorialPosTo3;
+
+    private Text tutorialMessage1;
+    private Text tutorialMessage2;
+    private Text tutorialMessage3;
+
+    int tutorialStep = -1;
+
     /**
      * Instantiates a new Game stage.
      */
@@ -87,12 +108,132 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
 
         setupColors();
         setupBoard();
+        int firstLaunch = PreferencesManager.getPreference(PreferencesManager.PREF_FIRST_LAUNCH);
+        if(firstLaunch == 0){
+            PreferencesManager.setPreference(PreferencesManager.PREF_FIRST_LAUNCH, 1);
+            setupTutorial();
+        }
+    }
+
+    private void setupTutorial() {
+
+
+        for (int i=1; i < BOARD_COLUMNS; i++){
+            rects[0][i].setColor(colors[0]);
+        }
+        rects[0][0].setColor(colors[1]);
+        rects[1][0].setColor(colors[0]);
+        rects[1][1].setColor(colors[1]);
+
+        tutorialPosFrom1 = new Vector2(rects[0][0].getX() + SQUARE_WIDTH/2, rects[0][0].getY());
+        tutorialPosTo1 = new Vector2(rects[1][0].getX() + SQUARE_WIDTH/2, rects[1][0].getY() + SQUARE_HEIGHT);
+
+        tutorialPosFrom2 = new Vector2(timeValue.getX() + timeValue.getWidth()/2,timeValue.getY() - timeValue.getHeight());
+        tutorialPosTo2 = new Vector2(timeValue.getX() + timeValue.getWidth()/2, timeValue.getY() - timeValue.getHeight() * 2);
+
+        tutorialPosFrom3 = new Vector2(scoreLabel.getX() + scoreLabel.getWidth()/2,scoreLabel.getY() + scoreLabel.getHeight() * 2);
+        tutorialPosTo3 = new Vector2(scoreLabel.getX() + scoreLabel.getWidth()/2, scoreLabel.getY() + scoreLabel.getHeight() * 3);
+
+        tutorialActor1 = new ArrowActor(timeValue.getX() + timeValue.getWidth()/2,timeValue.getY() - timeValue.getHeight());
+        addActor(tutorialActor1);
+
+        setupArrowAnimationSwipe();
+        tutorialStep = 0;
+    }
+
+    private void setTutorialArrowAnimationPosition(Vector2 from, Vector2 to){
+
+        tutorialActor1.getActions().clear();
+
+        RepeatAction repeat = new RepeatAction();
+
+        SequenceAction sequenceAction = new SequenceAction();
+
+        MoveToAction moveAction = getMoveToAction(from.x - tutorialActor1.getWidth()/2, from.y - tutorialActor1.getHeight()/2);
+        moveAction.setDuration(0.5f);
+        MoveToAction moveBackAction = getMoveToAction(to.x - tutorialActor1.getWidth()/2, to.y - tutorialActor1.getHeight()/2);
+        moveBackAction.setDuration(0.5f);
+
+        sequenceAction.addAction(moveAction);
+        sequenceAction.addAction(moveBackAction);
+
+
+        repeat.setAction(sequenceAction);
+        repeat.setCount(-1);
+
+        tutorialActor1.addAction(repeat);
+    }
+
+    private void disposeTutorialMessages(){
+        if(tutorialMessage1 != null){
+            tutorialMessage1.dispose();
+            tutorialMessage1.remove();
+        }
+        if(tutorialMessage2 != null){
+            tutorialMessage2.dispose();
+            tutorialMessage2.remove();
+        }
+        if(tutorialMessage3 != null){
+            tutorialMessage3.dispose();
+            tutorialMessage3.remove();
+        }
+    }
+
+    private void setTutorialMessage(String message1, String message2, String message3){
+        disposeTutorialMessages();
+        float marginTop = 50;
+
+        tutorialMessage1 = new Text(message1, camera.viewportWidth / 2, camera.viewportHeight / 2 - marginTop, 50, Color.BLACK);
+        tutorialMessage2 = new Text(message2, camera.viewportWidth / 2, camera.viewportHeight / 2 - marginTop, 50, Color.BLACK);
+        tutorialMessage3 = new Text(message3, camera.viewportWidth / 2, camera.viewportHeight / 2 - marginTop, 50, Color.BLACK);
+
+        float height = tutorialMessage1.getHeight() + 50;
+
+        tutorialMessage1.setPosition(tutorialMessage1.getX(), tutorialMessage1.getY() + height);
+        tutorialMessage2.setPosition(tutorialMessage2.getX(), tutorialMessage2.getY());
+        tutorialMessage3.setPosition(tutorialMessage3.getX(), tutorialMessage3.getY() - height);
+
+
+        addActor(tutorialMessage1);
+        addActor(tutorialMessage2);
+        addActor(tutorialMessage3);
+    }
+
+    private void setupArrowAnimationSwipe() {
+        setTutorialArrowAnimationPosition(tutorialPosFrom1, tutorialPosTo1);
+        setTutorialMessage("Swipe up the square", "to match the colors", "in a row or a column");
+    }
+
+    private void setupArrowAnimationTime() {
+        setTutorialArrowAnimationPosition(tutorialPosFrom2, tutorialPosTo2);
+        setTutorialMessage("You just have", "60 seconds.", "");
+        tutorialActor1.setFlipped(false);
+    }
+
+    private void setupArrowAnimationScore() {
+        setTutorialMessage("Each time you make", "a match, your", "score increases.");
+        setTutorialArrowAnimationPosition(tutorialPosFrom3, tutorialPosTo3);
+        tutorialActor1.setFlipped(true);
+    }
+
+    private void startGameTutorialMessage() {
+        setTutorialMessage("Touch anywhere to", "START PLAYING", ".");
+        setTutorialArrowAnimationPosition(tutorialPosFrom3, tutorialPosTo3);
+
+        tutorialActor1.getActions().clear();
+        tutorialActor1.dispose();
+        tutorialActor1.remove();
     }
 
     private void setupColors() {
         Color a = Color.valueOf("#08b4b6");
         Color b = Color.valueOf("#f67065");
         colors = new Color[]{a, b};
+    }
+
+
+    private void stopTutorial() {
+        disposeTutorialMessages();
     }
 
     private void setupBoard() {
@@ -229,6 +370,26 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         float directionX = 0;
         float directionY = 0;
 
+        System.out.println(position[0] + " " + position[1]);
+
+        //if its first step of tutorial
+        if(tutorialStep ==0) {
+            //if its the required square to be swiped
+            if (position[0] == 1 && position[1] == 0 && swipe == Swipe.UP) {
+                tutorialStep++;
+                setupArrowAnimationScore();
+            } else {
+                //if its not the required square, do nothing.
+                return;
+            }
+        }else if(tutorialStep != -1){
+            return;
+        }
+
+
+
+
+        AudioManager.playSound(AudioManager.SOUND_FLIP);
         SequenceAction action = new SequenceAction();
 
         //in sequence
@@ -310,6 +471,7 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         swipedActor.addAction(action);
     }
 
+
     @Override
     public void swipeUp(BoardRectActor actor) {
         if (isBusy)
@@ -318,13 +480,15 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         if (!gameStarted)
             startGame();
 
-        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.UP);
         Gdx.app.log("SWIPE", "UP " + actor.toString());
     }
 
     private void startGame() {
         gameStarted = true;
+        if(gameTimer != null){
+            gameTimer.cancel();
+        }
         gameTimer = new Timer.Task() {
             @Override
             public void run() {
@@ -337,8 +501,10 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
                     }
                     return;
                 }
-                time--;
-                timeValue.setText(time + "");
+                if(tutorialStep == -1) {
+                    time--;
+                    timeValue.setText(time + "");
+                }
             }
         };
         new Timer().scheduleTask(gameTimer, 0, 1, time);
@@ -352,7 +518,6 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         if (!gameStarted)
             startGame();
 
-        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.DOWN);
         Gdx.app.log("SWIPE", "DOWN " + actor.toString());
     }
@@ -365,7 +530,6 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         if (!gameStarted)
             startGame();
 
-        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.LEFT);
         Gdx.app.log("SWIPE", "LEFT " + actor.toString());
     }
@@ -378,10 +542,30 @@ public class GameStage extends Stage implements RectInputListener, InputProcesso
         if (!gameStarted)
             startGame();
 
-        AudioManager.playSound(AudioManager.SOUND_FLIP);
         animateSwipes(actor, Swipe.RIGHT);
         Gdx.app.log("SWIPE", "RIGHT " + actor.toString());
     }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        switch (tutorialStep){
+            case 1:
+                tutorialStep++;
+                setupArrowAnimationTime();
+                return true;
+            case 2:
+                tutorialStep++;
+                startGameTutorialMessage();
+                return true;
+            case 3:
+                tutorialStep = -1;
+                stopTutorial();
+                startGame();
+                return true;
+        }
+        return super.touchDown(screenX, screenY, pointer, button);
+    }
+
 
     public void removeColumn(int colNumber) {
         incrementScore();
