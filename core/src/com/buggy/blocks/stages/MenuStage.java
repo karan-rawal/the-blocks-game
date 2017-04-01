@@ -150,7 +150,7 @@ public class MenuStage extends Stage implements InputProcessor {
         float halfGapBetweenButtons = 10;
         float actualGap = shareButton.getWidth()/2 + halfGapBetweenButtons;
 
-        if (false) {
+        if (BuggyGame.isSignedIn()) {
             //ImageButtons
             leaderboardButton = new ImageButton("images/leaderboard.png", camera.viewportWidth / 2, optionsOldY);
             leaderboardButton.setY(leaderboardButton.getY() - optionsButton.getHeight());
