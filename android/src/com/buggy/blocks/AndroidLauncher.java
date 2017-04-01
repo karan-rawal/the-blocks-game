@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.buggy.blocks.utils.AndroidInterfaces;
+import com.buggy.blocks.utils.GameConfig;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -229,6 +230,14 @@ public class AndroidLauncher extends AndroidApplication implements AndroidInterf
 
             });
         }
+    }
+
+    @Override
+    public void shareGameUrl() {
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hey there, Check this game out! " + GameConfig.PLAY_STORE_URL);
+        startActivity(Intent.createChooser(sharingIntent, "Share using..."));
     }
 
     @Override

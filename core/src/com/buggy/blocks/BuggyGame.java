@@ -2,10 +2,8 @@ package com.buggy.blocks;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.buggy.blocks.screens.SplashScreen;
 import com.buggy.blocks.utils.AndroidInterfaces;
 import com.buggy.blocks.utils.AudioManager;
-import com.buggy.blocks.utils.GameConfig;
 import com.buggy.blocks.utils.GameManager;
 import com.buggy.blocks.utils.PreferencesManager;
 
@@ -69,6 +67,10 @@ public class BuggyGame extends Game {
                 android.submitStoredScore(highScore);
             }
         }
+    }
+
+    public static void shareGameUrl(){
+        android.shareGameUrl();
     }
 
     @Override

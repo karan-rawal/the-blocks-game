@@ -17,4 +17,7 @@ public interface AndroidInterfaces {
     public boolean isSignedIn();
     public void showScore();
     public void submitStoredScore(int highScore);
+
+    //share the game link
+    public void shareGameUrl();
 }

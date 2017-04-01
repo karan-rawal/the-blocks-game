@@ -49,6 +49,11 @@ public class MenuStage extends Stage implements InputProcessor {
     //image buttons
     private ImageButton leaderboardButton;
 
+    private ImageButton splashImage;
+
+    //share button
+    private ImageButton shareButton;
+
 
     /**
      * Instantiates a new Menu stage.
@@ -132,11 +137,25 @@ public class MenuStage extends Stage implements InputProcessor {
         //addActor(rateButton);
 
 
+        shareButton = new ImageButton("images/share.png", camera.viewportWidth / 2, optionsOldY - optionsButton.getHeight());
+        shareButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                AudioManager.playSound(AudioManager.SOUND_BUTTON);
+                BuggyGame.shareGameUrl();
+                return true;
+            }
+        });
 
-        if (BuggyGame.isSignedIn()) {
+        float halfGapBetweenButtons = 10;
+        float actualGap = shareButton.getWidth()/2 + halfGapBetweenButtons;
+
+        if (false) {
             //ImageButtons
             leaderboardButton = new ImageButton("images/leaderboard.png", camera.viewportWidth / 2, optionsOldY);
             leaderboardButton.setY(leaderboardButton.getY() - optionsButton.getHeight());
+            leaderboardButton.setX(leaderboardButton.getX() + actualGap);
+            shareButton.setX(shareButton.getX() - actualGap);
 
             addActor(leaderboardButton);
 
@@ -150,6 +169,13 @@ public class MenuStage extends Stage implements InputProcessor {
                 }
             });
         }
+
+        //splash image icon
+        float splashImageMarginTop = 200;
+
+        splashImage = new ImageButton("images/splashIcon.png", camera.viewportWidth / 2, camera.viewportHeight / 2 + splashImageMarginTop);
+        addActor(splashImage);
+        addActor(shareButton);
     }
 
     /**
@@ -209,7 +235,7 @@ public class MenuStage extends Stage implements InputProcessor {
 
             //if back was already pressed, exit the application.
             if (backAlreadyClicked) {
-                BuggyGame.android.toast("Thank you for playing my game :)");
+                BuggyGame.android.toast("Thank you for trying my game :)");
                 Gdx.app.exit();
                 this.dispose();
                 //cancel the task if it is not null.
@@ -245,5 +271,6 @@ public class MenuStage extends Stage implements InputProcessor {
         playButton.dispose();
         optionsButton.dispose();
         rateButton.dispose();
+        splashImage.dispose();
     }
 }
